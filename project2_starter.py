@@ -391,11 +391,44 @@ def google_scholar_searcher(query):
     Returns:
         List of titles on the first page (list)
     """
-    # TODO: Implement checkout logic following the instructions
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
-    pass
+    url = "https://scholar.google.com/scholar"
+    
+    # allows us to put "airbnb" as a parameter and get results
+    params = {"q": query} 
+
+    # used genAI but learned that in order to not get blocked off google, must use this header to get in
+    # otherwise they block you
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
+    # we'll get the response with the url, params, and header so we get real access.
+    response = requests.get(url, params=params, headers=headers)
+
+    # well use bs4 to parse the html into text
+    soup = BeautifulSoup(response.text, "html.parser")
+    titles = [] # we'll use this list to hold the titels.
+
+    # we only need to scrape titles, so let's find out how they r stored
+    # notice its stored in a h3 header with a specific class = gs_rt
+    regions = soup.find_all("h3", class_="gs_rt")
+
+    for area in regions:
+        title = area.get_text(strip=True)
+
+        if title:
+            titles.append(title)
+    
+    return titles
+
+    ''' we'll use these to test our output'''
+    # print("Status Code:", response.status_code)
+    # print("First 500 characters:\n")
+    # print(response.text[:500])
+
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
@@ -504,6 +537,7 @@ class TestCases(unittest.TestCase):
 def main():
     detailed_data = create_listing_database(os.path.join("html_files", "search_results.html"))
     output_csv(detailed_data, "airbnb_dataset.csv")
+    print(google_scholar_searcher("airbnb"))
 
 
 if __name__ == "__main__":
