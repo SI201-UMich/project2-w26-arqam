@@ -290,11 +290,47 @@ def avg_location_rating_by_room_type(data) -> dict:
     Returns:
         dict: {room_type: average_location_rating}
     """
-    # TODO: Implement checkout logic following the instructions
+    '''
+    room type is in row[5]
+    rating is in row[6]
+
+    we'll group by room type and ignore all 0.0 ratings
+    then we'll take an avarage and store it and return it in the dict
+    '''
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
-    pass
+    totals = {}
+    counts = {}
+
+    # retrieve room type and rating
+    for row in data:
+        room_type = row[5]
+        rating = row[6]
+
+        # skip if 0.0 rating
+        if rating == 0.0:
+            continue
+
+        # if the room type isn't in the dict then we initialize it to zero
+        if room_type not in totals:
+            totals[room_type] = 0
+            counts[room_type] = 0
+
+        # else we add the rating to the totals and increment the count
+        totals[room_type] += rating
+        counts[room_type] += 1
+
+    # now we'll caclulate average because once out of the loop we should have all values
+    averages = {}
+
+    # find avg
+    for room_type in totals:
+        averages[room_type] = totals[room_type] / counts[room_type]
+
+    return averages
+        
+
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
@@ -311,7 +347,6 @@ def validate_policy_numbers(data) -> list[str]:
     Returns:
         list[str]: A list of listing_id values whose policy numbers do NOT match the valid format
     """
-    # TODO: Implement checkout logic following the instructions
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
