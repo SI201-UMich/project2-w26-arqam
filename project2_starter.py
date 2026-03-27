@@ -106,16 +106,26 @@ def get_listing_details(listing_id) -> dict:
     text = soup.get_text() # get all the text using soup
 
     ''' Search for Policy Number '''
-    if "Pending" in text:
-        policy_number = "Pending"
-    elif "Exempt" in text:
-        policy_number = "Exempt"
-    else: 
-        match = re.search(r"(STR-\d+|\d+-\d+STR)", text) # use regex to find any word character or - (zero or more) followed by STR followed by the same beginning condition
-        if match:
-            policy_number = match.group()
-        else:
-            policy_number = ""
+    match = re.search(r"(20\d{2}-00\d{4}STR|STR-000\d{4})", text)
+    if match:
+        policy_number = match.group()
+    else:
+        # look specifically in the policy number field, not the whole page
+        policy_number = ""
+        for li in soup.find_all("li"):
+            li_text = li.get_text(strip=True)
+            if li_text.lower().startswith("policy number"):
+
+                # extract just the value after "policy number:"
+                value = re.split(r"policy number[:\s]*", li_text, flags=re.IGNORECASE) #used genAI for syntax
+
+                if len(value) > 1:
+                    val = value[1].strip().lower()
+                    if "pending" in val:
+                        policy_number = "Pending"
+                    elif "exempt" in val:
+                        policy_number = "Exempt"
+                break
     ''' Search for Policy Number '''
 
     ''' Search for Host Type '''
@@ -352,14 +362,13 @@ def validate_policy_numbers(data) -> list[str]:
     invalid_listings = []
     
     valid_pattern = r"^(20\d{2}-00\d{4}STR|STR-000\d{4})$"
-
     # extract listinf_id and policy_num for that row
     for row in data:
         listing_id = row[1]
-        policy_number = row[2]
+        policy_number = row[2].strip()
 
         # we only want to look at policy numbers that aren't Pending or Exempt
-        if policy_number in ["Pending", "Exempt"]:
+        if "Pending" in policy_number or "Exempt" in policy_number:
             continue
 
         # not we'll compare it to our pattern
@@ -487,10 +496,10 @@ class TestCases(unittest.TestCase):
         self.assertAlmostEqual(averages["Private Room"], 4.9)
 
     def test_validate_policy_numbers(self):
-        # TODO: Call validate_policy_numbers() on detailed_data and save the result into a variable invalid_listings.
-        # TODO: Check that the list contains exactly "16204265" for this dataset.
-        pass
-
+        # CHECK: Call validate_policy_numbers() on detailed_data and save the result into a variable invalid_listings.
+        invalid_listings = validate_policy_numbers(self.detailed_data)
+        # CHECK: Check that the list contains exactly "16204265" for this dataset.
+        self.assertEqual(invalid_listings, ["16204265"])
 
 def main():
     detailed_data = create_listing_database(os.path.join("html_files", "search_results.html"))
