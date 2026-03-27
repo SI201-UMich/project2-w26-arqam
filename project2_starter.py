@@ -127,11 +127,14 @@ def get_listing_details(listing_id) -> dict:
 
     ''' Search for Host Name '''
     host_name = ""
-    h2_tags = soup.find_all("h2") # notice "hosted by" is in a h2 header
-    for tag in h2_tags: # go through the h2 tags
-        find = tag.get_text(strip=True)
-        if "hosted by" in find.lower(): # if "hosted by" is in the text
-            host_name = find.split("hosted by")[1].strip() # grab the name right after it
+
+    for tag in soup.find_all("h2"): # hosted by is stored in an h2
+        text_line = tag.get_text(strip=True) # get text for that h2 which should contain "hosted by" somewhere in there
+
+        if "hosted by" in text_line.lower():
+            parts = re.split(r"hosted by", text_line, flags=re.IGNORECASE) # used genAI to get syntax on ignoring the case of the alphabetic chars
+            if len(parts) > 1:
+                host_name = parts[1].strip()
             break
     ''' Search for Host Name '''
 
@@ -211,11 +214,12 @@ def create_listing_database(html_path) -> list[tuple]:
     listings = load_listing_results(html_path) #load the listing results, should give us tuple (listing_title, listing_id)
     
     for listing_title, listing_id in listings:
-        inner_dict = get_listing_details(listing_id)
+        details_dict = get_listing_details(listing_id)
+        inner_dict = details_dict[listing_id]
 
         # make a tuple with the original listing tuple and the dictionary values
         row = (listing_title, listing_id, 
-               inner_dict["policy number"],
+               inner_dict["policy_number"],
                inner_dict["host_type"],
                inner_dict["host_name"],
                inner_dict["room_type"],
@@ -363,11 +367,24 @@ class TestCases(unittest.TestCase):
         
 
     def test_create_listing_database(self):
-        # TODO: Check that each tuple in detailed_data has exactly 7 elements:
+        # CHECK: Check that each tuple in detailed_data has exactly 7 elements:
         # (listing_title, listing_id, policy_number, host_type, host_name, room_type, location_rating)
+        for row in self.detailed_data:
+            self.assertEqual(len(row), 7)
 
-        # TODO: Spot-check the LAST tuple is ("Guest suite in Mission District", "467507", "STR-0005349", "Superhost", "Jennifer", "Entire Room", 4.8).
-        pass
+        # CHECK: Spot-check the LAST tuple is ("Guest suite in Mission District", "467507", "STR-0005349", "Superhost", "Jennifer", "Entire Room", 4.8).
+        self.assertEqual(
+            self.detailed_data[-1], 
+            ("Guest suite in Mission District",
+             "467507",
+             "STR-0005349",
+             "Superhost",
+             "Jennifer",
+             "Entire Room",
+             4.8
+            )
+        )
+        
 
     def test_output_csv(self):
         out_path = os.path.join(self.base_dir, "test.csv")
