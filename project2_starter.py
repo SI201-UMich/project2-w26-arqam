@@ -408,9 +408,23 @@ class TestCases(unittest.TestCase):
     def test_output_csv(self):
         out_path = os.path.join(self.base_dir, "test.csv")
 
-        # TODO: Call output_csv() to write the detailed_data to a CSV file.
-        # TODO: Read the CSV back in and store rows in a list.
-        # TODO: Check that the first data row matches ["Guesthouse in San Francisco", "49591060", "STR-0000253", "Superhost", "Ingrid", "Entire Room", "5.0"].
+        # CHECK: Call output_csv() to write the detailed_data to a CSV file.
+        output_csv(self.detailed_data, out_path)
+        # CHECK: Read the CSV back in and store rows in a list.
+        with open(out_path, "r", encoding="utf-8-sig") as file:
+            reader = csv.reader(file)
+            rows = list(reader)
+        # CHECK: Check that the first data row matches ["Guesthouse in San Francisco", "49591060", "STR-0000253", "Superhost", "Ingrid", "Entire Room", "5.0"].
+        self.assertEqual(
+            rows[1],
+            ["Guesthouse in San Francisco",
+            "49591060",
+            "STR-0000253",
+            "Superhost",
+            "Ingrid",
+            "Entire Room",
+            "5.0"]
+        )
 
         os.remove(out_path)
 
