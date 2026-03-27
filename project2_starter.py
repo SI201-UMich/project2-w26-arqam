@@ -94,11 +94,94 @@ def get_listing_details(listing_id) -> dict:
             }
         }
     """
-    # TODO: Implement checkout logic following the instructions
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
-    pass
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    file_path = os.path.join(base_dir, "html_files", f"listing_{listing_id}.html") # we'll join each "listing_" with the id "??????"
+
+    with open(file_path, "r", encoding="utf-8-sig") as file: # open the file path with the listing path
+        soup = BeautifulSoup(file.read(), "html.parser") # read the file
+
+    text = soup.get_text() # get all the text using soup
+
+    ''' Search for Policy Number '''
+    if "Pending" in text:
+        policy_number = "Pending"
+    elif "Exempt" in text:
+        policy_number = "Exempt"
+    else: 
+        match = re.search(r"\b[\w-]*STR[\w-]*\b", text) # use regex to find any word character or - (zero or more) followed by STR followed by the same beginning condition
+        if match:
+            policy_number = match.group()
+        else:
+            policy_number = ""
+    ''' Search for Policy Number '''
+
+    ''' Search for Host Type '''
+    if  "Superhost" in text:
+        host_type = "Superhost"
+    else:
+        host_type = "regular"
+    ''' Search for Host Type '''
+
+    ''' Search for Host Name '''
+    host_name = ""
+    h2_tags = soup.find_all("h2") # notice "hosted by" is in a h2 header
+    for tag in h2_tags: # go through the h2 tags
+        find = tag.get_text(strip=True)
+        if "hosted by" in find.lower(): # if "hosted by" is in the text
+            host_name = find.split("hosted by")[1].strip() # grab the name right after it
+            break
+    ''' Search for Host Name '''
+
+    ''' Search for Room Type '''
+    middle = ""
+    for tag in soup.find_all("h2"):
+        line = tag.get_text(strip=True)
+        if "hosted by" in line.lower():
+            middle = line
+            break
+
+    if middle:
+        first_word = middle.split()[0]
+    else:
+        first_word = ""
+
+    if first_word == "Private":
+        room_type = "Private Room"
+    elif first_word == "Shared":
+        room_type = "Shared Room"
+    else:
+        room_type = "Entire Room"
+
+    ''' Search for Room Type '''
+
+    ''' Search for Rating '''
+    location_rating = 0.0 # set by default
+
+    location_label = soup.find(string="Location")
+
+    if location_label:
+        parent = location_label.find_parent()
+        if parent:
+            match = re.search(r"\d\.\d+", parent.get_text())
+            if match:
+                location_rating = float(match.group())
+                
+    ''' Search for Rating '''
+
+    # return dict: 
+    return {
+        listing_id: {
+            "policy_number": policy_number,
+            "host_type": host_type,
+            "host_name": host_name,
+            "room_type": room_type,
+            "location_rating": location_rating
+        }
+    }
+
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
