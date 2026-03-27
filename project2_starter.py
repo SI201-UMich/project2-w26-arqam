@@ -163,10 +163,10 @@ def get_listing_details(listing_id) -> dict:
 
     full_text = soup.get_text(separator=" ", strip=True)
 
-    match = re.search(r"Location\s*(\d\.\d+)", full_text)
+    match = re.search(r"Location\s*(\d\.\d+)", full_text) # we'll use regex to find the decimal number
 
     if match:
-        location_rating = float(match.group(1))
+        location_rating = float(match.group(1)) # must convert to float before assigning it into the field
 
     ''' Search for Rating '''
 
@@ -197,11 +197,35 @@ def create_listing_database(html_path) -> list[tuple]:
         list[tuple]: A list of tuples. Each tuple contains:
         (listing_title, listing_id, policy_number, host_type, host_name, room_type, location_rating)
     """
-    # TODO: Implement checkout logic following the instructions
+    '''
+    first we'll get the listings results (listing_title, listing_id)
+    for each listing_title and listing_id in listings, we'll get the listing details
+    based on each of those, we can make a dict with tuples of the full listing 
+    we'll put the full listing into a database list
+    '''
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
-    pass
+    database = [] # our empty database will get filled
+
+    listings = load_listing_results(html_path) #load the listing results, should give us tuple (listing_title, listing_id)
+    
+    for listing_title, listing_id in listings:
+        inner_dict = get_listing_details(listing_id)
+
+        # make a tuple with the original listing tuple and the dictionary values
+        row = (listing_title, listing_id, 
+               inner_dict["policy number"],
+               inner_dict["host_type"],
+               inner_dict["host_name"],
+               inner_dict["room_type"],
+               inner_dict["location_rating"]
+               )
+        
+        database.append(row) # append the row to the database and return it
+
+    return database
+    
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
