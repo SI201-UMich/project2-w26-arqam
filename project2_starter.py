@@ -248,11 +248,30 @@ def output_csv(data, filename) -> None:
     Returns:
         None
     """
-    # TODO: Implement checkout logic following the instructions
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
-    pass
+    # we can sort via lambda which will take last item in data and sort in reverse order
+    sorted_data = sorted(data, key=lambda x: x[6], reverse=True) 
+
+    # open a file for writing
+    with open(filename, 'w', encoding="utf-8-sig") as file:
+        writer = csv.writer(file)
+
+        # our header
+        writer.writerow([
+            "Listing Title",
+            "Listing ID",
+            "Policy Number",
+            "Host Type",
+            "Host Name"
+            "Room Type"
+            "Location Rating"
+        ])
+        
+        # for each row in the data, we'll write this into our CSV
+        for row in sorted_data:
+            writer.writerow(row)
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
