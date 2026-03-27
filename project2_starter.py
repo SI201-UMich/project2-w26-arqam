@@ -345,10 +345,28 @@ def validate_policy_numbers(data) -> list[str]:
     Returns:
         list[str]: A list of listing_id values whose policy numbers do NOT match the valid format
     """
+    # main thing to understand here is the regex
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
-    pass
+    invalid_listings = []
+    
+    valid_pattern = r"^(20\d{2}-00\d{4}STR|STR-000\d{4})$"
+
+    # extract listinf_id and policy_num for that row
+    for row in data:
+        listing_id = row[1]
+        policy_number = row[2]
+
+        # we only want to look at policy numbers that aren't Pending or Exempt
+        if policy_number in ["Pending", "Exempt"]:
+            continue
+
+        # not we'll compare it to our pattern
+        if not re.match(valid_pattern, policy_number):
+            invalid_listings.append(listing_id)
+
+    return invalid_listings
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
