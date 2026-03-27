@@ -1,7 +1,7 @@
 # SI 201 HW4 (Library Checkout System)
-# Your name:
-# Your student id:
-# Your email:
+# Your name: Syed-Arqam Ahmad
+# Your student id: 4772 8485
+# Your email: aarqam@umich.edu
 # Who or what you worked with on this homework (including generative AI like ChatGPT):
 # If you worked with generative AI also add a statement for how you used it.
 # e.g.:
@@ -37,11 +37,39 @@ def load_listing_results(html_path) -> list[tuple]:
     Returns:
         list[tuple]: A list of tuples containing (listing_title, listing_id)
     """
-    # TODO: Implement checkout logic following the instructions
+
+    # From what I see the title and id is embedded in this line of the HTML:
+    ''' <div class="t1jojoys dir dir-ltr" id="title_1944564" 
+        data-testid="listing-card-title">Loft in Mission District</div>'''
+    
+    ''' So what we can do is find all div classes with the attribute value listing-card-title 
+        since it doesn't change across listings. Using that we'll also extract the title_id and
+        replace the 'title_id' part with just an empty string, extracting only the id ''' 
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
-    pass
+    # open the html path as file
+    with open(html_path, 'r', encoding="utf-8-sig") as file: 
+        soup = BeautifulSoup(file.read(), "html.parser") # have beautiful soup read the file with html parser
+
+    # make an empty list to hold the values for tuples of listing and title.
+    listing_and_title = []
+
+    #again we'll use beautiful soup to find all these div classes with the specific attribute for listing-card-title
+    title_divs = soup.find_all("div", attrs={"data-testid":"listing-card-title"})
+
+    #now go through each and return the listing-card-title as the title and id attribute as title_id, replace all "title_id" with ""
+    for div in title_divs:
+        title = div.get_text(strip=True)
+
+        full_id = div.get("id") #gives us: "title_=????????"
+
+        if isinstance(full_id, str):
+            listing_id = full_id.split("title_")[1] 
+            listing_and_title.append((title, listing_id)) # we'll append this as a tuple to our list
+
+    return listing_and_title
+
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
@@ -193,9 +221,11 @@ class TestCases(unittest.TestCase):
         self.detailed_data = create_listing_database(self.search_results_path)
 
     def test_load_listing_results(self):
-        # TODO: Check that the number of listings extracted is 18.
-        # TODO: Check that the FIRST (title, id) tuple is  ("Loft in Mission District", "1944564").
-        pass
+        # CHECK: Check that the number of listings extracted is 18.
+        # CHECK: Check that the FIRST (title, id) tuple is  ("Loft in Mission District", "1944564").
+
+        self.assertEqual(len(self.listings), 18)
+        self.assertEqual(self.listings[0], ("Loft in Mission District", "1944564"))
 
     def test_get_listing_details(self):
         html_list = ["467507", "1550913", "1944564", "4614763", "6092596"]
