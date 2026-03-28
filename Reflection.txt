@@ -1,0 +1,43 @@
+Title: Reflection
+
+1. After web scraping data off of Airbnb as well as analyzing my resulting dataset,
+   I believe the current system doesn't provide accountability and is inadequate.
+   Most of the listings within my CSV dataset, that was the result of getting data 
+   directly from the Airbnb website, seem to have some policy numbers that don't 
+   validate the Engineering Code of Ethics. Particularly, Principle 3 says that engineers
+   should ensure their products meet the highest professional standards possible and 
+   use accurate data derived by ethical means (3.13, 3.14). If Airbnb's system displays
+   missing or unverified policy numbers, it suggests that the platform may not be aligning
+   with principle 3 of the Engineering Code of Ethics. I think to better approach this, 
+   Airbnb could cross-check directly with the city registration's database instead of having 
+   hosts self report. This change would better keep in check the Engineering Code of Ethics
+   as well as protecting the public good and maintaining integrity in software systems.
+
+2. One important factor to consider in the legality of web scraping is whether the scraping
+   causes harm or interferes with the websites functioning. Using Wikipedia, I found there are 
+   several cases such as eBay v. Bidder's Edge as well as the QVC case, which focused not just 
+   on access, but on whether the scraping activity overloaded servers or interrupted business 
+   operations. In those situations, we found that QVC argued that excessive automated requests
+   caused its website to crash and resulted in lost sales. This shows that legality is not just 
+   about public data, but also about the impact of the scraping behavior. I think this factor 
+   is important because consdering system harm helps balance innovation and accountability with
+   fairness to the website owner and other users.
+
+3. I think two important guidelines to consider before engaging in web scraping are: 1. Respect
+   meaningful consent and the context in which the data was shared and 2. Minimize harm and ensure
+   proportionality of usage. Regarding meaningful consent and the context in which we share data, we
+   must understand that just because information is publicly available does not mean people consented
+   to it being collected, aggregated, and repurposed. The Clearview AI case shows how scraping billions
+   of publicly posted photos can fundamentally change how data is used, turning casual social media
+   posts into a permanent facial recognition database. Here context is very important! Someone uploading 
+   a photo to connect with friends is very different from consenting to being included in a law enforcement
+   surveillance tool. I think if the use of web scraping changes the scale, permanence, or purpose of the 
+   data in a way that harms autonomy or privacy, it should be reconsidered. Along with that, another 
+   guideline to be considered is minimizing harm and ensure proprotionality of use. When data is scraped 
+   it should only be used for clearly defined, legitimate, purposes, and the benefits should outweigh 
+   the risks. Clearview AI show how large-scale scraping can lead to wrongful arrests, bias concerns,
+   as well as mass surveillance. Before scraping, organizations should evaluate potential downstream harms
+   such as discriminiation, misidentification, and reputational damage. Data collection can be done in a
+   way where principles where collect only what is necessary is used, and security safegaurds, transparency,
+   and accountability is all present. Overall, web scraping should prioritize informed expectations, 
+   proportional usage, as well as harm reduction.

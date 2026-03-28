@@ -2,12 +2,18 @@
 # Your name: Syed-Arqam Ahmad
 # Your student id: 4772 8485
 # Your email: aarqam@umich.edu
-# Who or what you worked with on this homework (including generative AI like ChatGPT):
+# Who or what you worked with on this homework (including generative AI like ChatGPT): Google, ChatGPT
 # If you worked with generative AI also add a statement for how you used it.
 # e.g.:
 # Asked ChatGPT for hints on debugging and for suggestions on overall code structure
+# - I ran into major debugging issues in the get_listing_detail() function, and I just could not get the policy numbers feature to work.
+#  After working with the debugging tool and writing print statements to test my code, I couldn't get an idea, so I turned to Google and
+#  ChatGPT, which suggested using a regex feature that ignores cases on text known as re.IGNORECASE. So I was able to learn something new 
+#  as well as implement it into my code, but I did rely on chatGPT to help me understand why igoring the text casing would work. 
 #
 # Did your use of GenAI on this assignment align with your goals and guidelines in your Gen AI contract? If not, why?
+# - I think my use of GenAI on this assignment did align with my goals and guidelines, because in my guidelines I stated that I would like to use
+#.  GenAI as a learning tool to understand and debug code, which is exactly what I used it for. 
 #
 # --- ARGUMENTS & EXPECTED RETURN VALUES PROVIDED --- #
 # --- SEE INSTRUCTIONS FOR FULL DETAILS ON METHOD IMPLEMENTATION --- #
